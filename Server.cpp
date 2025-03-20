@@ -12,7 +12,7 @@
 #include <cerrno>
 
 Server::Server(int port, const std::string &password)
-    : _port(port), _password(password), _running(true)
+    : _port(port), _password(password), _running(true), _serverName("irc.ft_irc.com")
 {
     _serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (_serverSocket < 0)
@@ -146,24 +146,24 @@ void Server::processClientMessage(Client &client) {
 void Server::handleAuthentication(Client &client, const std::vector<std::string> &tokens) {
     if (tokens[0] == "PASS") {
         if (tokens.size() < 2) {
-            client.sendMessage("ERROR: PASS requires a parameter.");
+            client.sendMessage("461 PASS :Not enough parameters");
             return;
         }
         if (tokens[1] == _password)
             client.setPass(true);
         else {
-            client.sendMessage("ERROR: Incorrect password.");
+            client.sendMessage("464 :Password incorrect");
             return;
         }
     } else if (tokens[0] == "NICK") {
         if (tokens.size() < 2) {
-            client.sendMessage("ERROR: NICK requires a parameter.");
+            client.sendMessage("461 NICK :Not enough parameters");
             return;
         }
         client.setNickname(tokens[1]);
     } else if (tokens[0] == "USER") {
         if (tokens.size() < 2) {
-            client.sendMessage("ERROR: USER requires a parameter.");
+            client.sendMessage("461 USER :Not enough parameters");
             return;
         }
         client.setUsername(tokens[1]);
@@ -172,7 +172,8 @@ void Server::handleAuthentication(Client &client, const std::vector<std::string>
     // Eğer PASS, NICK ve USER bilgileri sağlanmışsa istemciyi kayıtlı hale getir
     if (client.hasPassed() && !client.getNickname().empty() && !client.getUsername().empty()) {
         client.setRegistered(true);
-        client.sendMessage("Registration complete. You are now registered. Use QUIT to disconnect.");
+        // RFC 1459'a uygun welcome mesajı: Numeric reply 001
+        sendNumericReply(client, "001", "Welcome to the IRC network, " + client.getNickname());
     }
 }
 
@@ -180,7 +181,6 @@ void Server::handleRegisteredCommand(Client &client, const std::vector<std::stri
     // Sadece QUIT komutu kabul ediliyor
     if (tokens[0] == "QUIT")
         quitClient(client);
-        
     else
         client.sendMessage("ERROR: Unknown command. Only QUIT command is allowed.");
 }
@@ -201,6 +201,12 @@ void Server::quitClient(Client &client) {
     }
     _clients.erase(fd);
     std::cout << "Client FD " << fd << " disconnected." << std::endl;
+}
+
+void Server::sendNumericReply(Client &client, const std::string &code, const std::string &msg) {
+    // Örnek: ":irc.ft_irc.com 001 <nickname> :Welcome to the IRC network, <nickname>"
+    std::string reply = ":" + _serverName + " " + code + " " + client.getNickname() + " :" + msg;
+    client.sendMessage(reply);
 }
 
 const std::string &Server::getPassword() const {

@@ -1,8 +1,6 @@
 #ifndef FT_IRC_UTILS_HPP
 #define FT_IRC_UTILS_HPP
 
-#include "Server.hpp"
-#include "Client.hpp"
 #include <vector>
 #include <string>
 

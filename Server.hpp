@@ -24,12 +24,15 @@ public:
     void receiveData(Client &client);
     void processClientMessage(Client &client);
 
-    // İstemci henüz kayıtlı değilse kimlik doğrulama komutlarını işler (PASS, NICK, USER)
+    // Kimlik doğrulama için PASS, NICK, USER komutlarını işler
     void handleAuthentication(Client &client, const std::vector<std::string> &tokens);
-    // Kayıtlı istemciden gelen komutları (şimdilik sadece QUIT) işler
+    // Kayıtlı istemcilerde sadece QUIT komutunu işler
     void handleRegisteredCommand(Client &client, const std::vector<std::string> &tokens);
     // İstemcinin bağlantısını sonlandırır
     void quitClient(Client &client);
+
+    // RFC 1459 uyumlu numeric reply göndermek için yardımcı metot
+    void sendNumericReply(Client &client, const std::string &code, const std::string &msg);
 
     const std::string &getPassword() const;
 
@@ -41,6 +44,7 @@ private:
     std::vector<pollfd> _pollFds;
     std::map<int, Client> _clients; // socket fd'sine göre istemciler
     bool _running;
+    std::string _serverName;
 };
 
 #endif

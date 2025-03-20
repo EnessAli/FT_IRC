@@ -36,10 +36,11 @@ void Client::sendMessage(const std::string &message) {
     ssize_t sent = send(_fd, msg.c_str(), msg.size(), 0);
     if (sent < 0) {
         if (errno == EPIPE)
-            return; // Broken pipe hatası durumunda sessizce geri dön "nc: write failed (0/2): Broken pipe" hatası için
+            return; // Broken pipe hatası durumunda sessizce geri dön
         // Diğer hatalar için loglama yapılabilir
     }
 }
+
 bool Client::isRegistered() const {
     return _registered;
 }

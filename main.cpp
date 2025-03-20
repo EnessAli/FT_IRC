@@ -1,4 +1,5 @@
 #include "ft_irc_utils.hpp"
+#include "Server.hpp"
 #include <cstdlib>
 #include <iostream>
 #include <csignal>
