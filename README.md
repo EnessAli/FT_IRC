@@ -92,3 +92,20 @@
 
     poll() fonksiyonu, fds dizisinde belirtilen soketleri dinler ve olayların meydana gelip gelmediğini kontrol eder.
     events alanında belirtilen olayların meydana gelmesi durumunda, revents alanında ilgili bayraklar (flags) ayarlanır.
+
+
+
+
+Projenin Kullanımı:
+
+Derleme: Proje dizininde make komutunu çalıştırarak projeyi derleyebilirsiniz.​
+
+Çalıştırma: Derleme işlemi tamamlandıktan sonra, ./ircserv <port> <password> komutunu kullanarak sunucuyu başlatabilirsiniz. Burada <port>(6667) sunucunun dinleyeceği port numarasını, <password>(Size kalmış) ise istemcilerin bağlanırken kullanacağı şifreyi temsil eder.​
+Örnek : ./ircserv 6667 password
+
+Bağlantı: Bir IRC istemcisi (örneğin, HexChat veya irssi) kullanarak sunucuya bağlanabilirsiniz. İstemci ayarlarında sunucu adresi olarak sunucunun çalıştığı makinenin IP adresini, port olarak belirlediğiniz <port> numarasını ve şifre olarak <password> değerini girmeniz gerekmektedir.​
+Örnek : nc -C 6667 password
+
+Kullanım: Bağlantı kurulduktan sonra, IRC protokolüne uygun komutları kullanarak kanallara katılabilir, mesaj gönderebilir ve diğer kullanıcılarla etkileşime geçebilirsiniz.
+
+
